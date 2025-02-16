@@ -1,0 +1,33 @@
+.barLoader { 
+    
+}
+
+.bottomSection {
+     margin-top: 10px;
+    /*border-width: 1px;
+    border-color: gray;
+    border-style: solid; */
+}
+
+.apiTable {
+    border: 1px solid;
+}
+
+/* th, td {
+    border: 1px solid;
+    width: 100%;
+    text-align: center;
+} */
+
+th {
+    border: 1px solid;
+    text-align: center;
+}
+td {
+    border: 1px solid;
+    text-align: center;
+}
+table {
+    border-collapse: collapse;
+    width: 100%;
+}

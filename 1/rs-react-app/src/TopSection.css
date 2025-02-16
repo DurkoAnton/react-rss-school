@@ -1,0 +1,25 @@
+.topSectionInput {
+    /* margin: 0 auto; */
+  
+     /* line-height: 25px;
+    border: 1px solid;  */
+    width: 80%;
+    /* border: 5px solid; */
+}
+
+.topSection {
+      display: flex;  
+     /* justify-content: space-between; */
+     /* align-content: center; */
+     column-gap: 10px;  
+     width: 99%;
+     border-color: gray;
+    border-width: 1px;
+     border-style: solid;
+     padding: 5px;
+     /* background-color: aliceblue;  */
+}
+
+.topSectionButton {
+   width: 18%;
+}

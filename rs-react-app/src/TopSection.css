@@ -1,0 +1,23 @@
+.wrapper,
+html,
+body {
+  height: 100%;
+  margin: 0;
+}
+
+.wrapper {
+  display: flex;
+  flex-direction: row;
+  place-items: center;
+  justify-content: center;
+}
+
+.nav {
+  background-color: red;
+  flex: 1
+}
+
+.main {
+  background-color: blue;
+  flex: 1
+}

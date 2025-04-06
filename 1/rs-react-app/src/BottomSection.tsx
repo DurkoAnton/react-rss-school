@@ -1,59 +1,229 @@
-import { Component } from 'react';
+import { Component, useEffect, useState } from 'react';
 import './BottomSection.css';
 import Table from 'react-bootstrap/Table';
 import { BarLoader } from 'react-spinners';
+import { useHistory } from "react-router-dom"
 
-class BottomSection extends Component<{isDataLoading: boolean, responses: Array<{id: string, description: string}>}, {isDataLoading : string}> {
+function BottomSection(props: any){
 
-  constructor(props : {isDataLoading: boolean, responses: Array<{id: string, description: string}>}) {
-    super(props);
+  const [tbodyData, setTbodyData] = useState([]);
+  const [currentPageData, setCurrentPageData] = useState([]);
+  const [numberRows, setNumberRows] = useState(3);
+  const [currentNumberRows, setCurrentNumberRows] = useState(0);
+  const [fullData, setFullData] = useState([]);
+
+  const history = useHistory()
+
+  useEffect(()=>{
+    console.log("use effect")
+    //console.log(props.searchvalue.trim())
+    if (props.searchvalue == null) {
+      console.log("no")
+      return;
+    }
+    // else {
+    //   console.log(props.searchvalue)
+    // }
+    const arrays: Array<object> = [];
+    const xhr = new XMLHttpRequest();
+    const nextURL = `https://swapi.dev/api/people?search=${props.searchvalue.trim()}`;
+    //let jsonResponses = [];
+
+    xhr.onload = async function () {
+      if (xhr.status === 200) {
+        const res = JSON.parse(xhr.responseText);
+        const jsonResponses = res.results;
+        
+        jsonResponses.forEach((element: {name: string, gender: string}) => {
+          arrays.push({
+            id: element.name,
+            description: element.gender,
+          });
+        });
+        //console.log(arrays)
+        if (arrays.length == 0) {
+          //console.log("no set")
+          setTbodyData([]);
+        } else {
+          console.log("set")
+          setTbodyData(arrays);
+          setFullData(arrays);
+           let currentIndex = 0;
+           let currentPage = [];
+          for (let element of arrays) {
+            if (currentIndex >= numberRows){
+              currentIndex = 0;
+             console.log("get")
+             //console.log(currentPage)
+              break;
+            }
+            currentPage.push(element);
+            currentIndex++;
+          }
+           setCurrentNumberRows(1);
+           setCurrentPageData(currentPage);
+           console.log(currentPageData)
+          // divide to pages
+        }
+
+        //props.setDataLoading(false);
+      }
+    }.bind(this);
+
+    xhr.open('GET', nextURL, false);
+    //props.setDataLoading(true);
+    
+    try {
+     xhr.send();
+     const params = new URLSearchParams();
+     params.append("name", "query")
+     console.log(history)
+     history.push({search: params.toString()})
+// currentUrlParams.set('page', "1");
+// console.log(props.history)
+// props.history.push(window.location.pathname + "?" + currentUrlParams.toString());
+    } catch {
+      // this.setState(() => {
+      //   throw new Error('Making request error');
+      // });
+    }
+    //let tbodyData : Array<{id: string, description: string}> = [];
+   
+
+  },[props.searchvalue])
+
+  const onPrevPage = ()=>{
+    //console.log("next page")
+    let currentPage = [];
+    let i = numberRows*(currentNumberRows-2);
+    const nextPage = i + numberRows;
+    for(i; i < nextPage && i < fullData.length && i >= 0; i++){
+      //console.log(i)
+      currentPage.push(fullData[i])
+    }
+    if (currentPage.length > 0){
+      const currentPageNumberRow = currentNumberRows-1;
+      setCurrentNumberRows(currentPageNumberRow);
+      setCurrentPageData(currentPage);
+      history.push('/search/' + currentPageNumberRow, { swallow : false })
+      //console.log(currentPage)
+    }
   }
 
-  render() {
-    let tbodyData : Array<{id: string, description: string}> = [];
-    if (this.props.responses.length == 0) {
-      tbodyData = [];
-    } else {
-      tbodyData = this.props.responses;
+  const onNextPage = ()=>{
+    console.log("next page")
+    let currentPage = [];
+    let i = numberRows*currentNumberRows;
+    const nextPage = i + numberRows;
+    for(i; i < nextPage && i < fullData.length; i++){
+      //console.log(i)
+      currentPage.push(fullData[i])
     }
-
-    if (this.props.isDataLoading) {
-      return (
-        <div className='bottomSection'>
-          <BarLoader
-            className="barLoader"
-            color="purple"
-            height={4}
-            width={100}
-            loading={true}
-          />
-        </div>
-      );
-    } else {
-      return (
-        <div className='bottomSection'>
-          <Table striped bordered hover className='apiTable'>
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Description</th>
-              </tr>
-            </thead>
-            <tbody>
-              {tbodyData.map((item : {id:string, description:string}) => {
-                return (
-                  <tr>
-                    <td width="30%" className='apiTable'>{item.id}</td>
-                    <td>{item.description}</td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </Table>
-        </div>
-      );
+    if (currentPage.length > 0){
+      const currentPageNumberRow = currentNumberRows+1;
+      setCurrentNumberRows(currentPageNumberRow);
+      setCurrentPageData(currentPage);
+      history.push('/search/' + currentPageNumberRow, { swallow : false })
+      //console.log(currentPage)
     }
   }
+
+  // if (props.isDataLoading) {
+  //   return (
+  //     <div className='bottomSection'>
+  //       <BarLoader
+  //         className="barLoader"
+  //         color="purple"
+  //         height={4}
+  //         width={100}
+  //         loading={true}
+  //       />
+  //     </div>
+  //   );
+  // } else {
+    return (
+      <div className='bottomSection'>
+        <Table striped bordered hover className='apiTable'>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            {currentPageData.map((item : {id:string, description:string}) => {
+              return (
+                <tr>
+                  <td width="30%" className='apiTable'>{item.id}</td>
+                  <td>{item.description}</td>
+                </tr>
+              );
+              // out  
+            })}
+          </tbody>
+        </Table>
+        <button onClick={onPrevPage}>Prev</button>
+        <text>{currentNumberRows}/{ Math.ceil(fullData.length/numberRows)}</text>
+        <button onClick={onNextPage}>Next</button>
+      </div>
+    );
+  //}
 }
+
+// class BottomSection extends Component<{isDataLoading: boolean, responses: Array<{id: string, description: string}>}, {isDataLoading : string}> {
+
+//   constructor(props : {isDataLoading: boolean, responses: Array<{id: string, description: string}>}) {
+//     super(props);
+//   }
+
+
+//   // render() {
+//   //   let tbodyData : Array<{id: string, description: string}> = [];
+//   //   if (this.props.responses.length == 0) {
+//   //     tbodyData = [];
+//   //   } else {
+//   //     tbodyData = this.props.responses;
+//   //   }
+
+//   //   if (this.props.isDataLoading) {
+//   //     return (
+//   //       <div className='bottomSection'>
+//   //         <BarLoader
+//   //           className="barLoader"
+//   //           color="purple"
+//   //           height={4}
+//   //           width={100}
+//   //           loading={true}
+//   //         />
+//   //       </div>
+//   //     );
+//   //   } else {
+//   //     return (
+//   //       <div className='bottomSection'>
+//   //         <Table striped bordered hover className='apiTable'>
+//   //           <thead>
+//   //             <tr>
+//   //               <th>ID</th>
+//   //               <th>Description</th>
+//   //             </tr>
+//   //           </thead>
+//   //           <tbody>
+//   //             {tbodyData.map((item : {id:string, description:string}) => {
+//   //               return (
+//   //                 <tr>
+//   //                   <td width="30%" className='apiTable'>{item.id}</td>
+//   //                   <td>{item.description}</td>
+//   //                 </tr>
+//   //               );
+//   //             })}
+//   //           </tbody>
+//   //         </Table>
+//   //         <button>Prev</button>
+//   //         <button onClick={this.onNextPage}>Next</button>
+//   //       </div>
+//   //     );
+//   //   }
+//   // }
+// }
 
 export default BottomSection;

@@ -4,7 +4,7 @@ import './index.css';
 import Parent from './Parent.tsx';
 
 createRoot(document.getElementById('root')!).render(
-  <StrictMode>
+//  <StrictMode>
     <Parent />
-  </StrictMode>
+ // </StrictMode>
 );

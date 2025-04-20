@@ -2,7 +2,8 @@ import { Component, useEffect, useState } from 'react';
 import './BottomSection.css';
 import Table from 'react-bootstrap/Table';
 import { BarLoader } from 'react-spinners';
-import { useHistory } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
+
 
 function BottomSection(props: any){
 
@@ -12,7 +13,7 @@ function BottomSection(props: any){
   const [currentNumberRows, setCurrentNumberRows] = useState(0);
   const [fullData, setFullData] = useState([]);
 
-  const history = useHistory()
+  const history = useNavigate()
 
   useEffect(()=>{
     console.log("use effect")
@@ -26,59 +27,63 @@ function BottomSection(props: any){
     // }
     const arrays: Array<object> = [];
     const xhr = new XMLHttpRequest();
-    const nextURL = `https://swapi.dev/api/people?search=${props.searchvalue.trim()}`;
+    const nextURL = `http://swapi.dev/api/people`;
     //let jsonResponses = [];
+    setCurrentNumberRows(1);
+    setCurrentPageData([{id: "id", description : "desc"}]);
 
     xhr.onload = async function () {
-      if (xhr.status === 200) {
-        const res = JSON.parse(xhr.responseText);
-        const jsonResponses = res.results;
-        
-        jsonResponses.forEach((element: {name: string, gender: string}) => {
-          arrays.push({
-            id: element.name,
-            description: element.gender,
-          });
-        });
-        //console.log(arrays)
-        if (arrays.length == 0) {
-          //console.log("no set")
-          setTbodyData([]);
-        } else {
-          console.log("set")
-          setTbodyData(arrays);
-          setFullData(arrays);
-           let currentIndex = 0;
-           let currentPage = [];
-          for (let element of arrays) {
-            if (currentIndex >= numberRows){
-              currentIndex = 0;
-             console.log("get")
-             //console.log(currentPage)
-              break;
-            }
-            currentPage.push(element);
-            currentIndex++;
-          }
-           setCurrentNumberRows(1);
-           setCurrentPageData(currentPage);
-           console.log(currentPageData)
-          // divide to pages
-        }
+      
 
-        //props.setDataLoading(false);
-      }
+      // if (xhr.status === 200) {
+      //   const res = JSON.parse(xhr.responseText);
+      //   const jsonResponses = res.results;
+        
+      //   jsonResponses.forEach((element: {name: string, gender: string}) => {
+      //     arrays.push({
+      //       id: element.name,
+      //       description: element.gender,
+      //     });
+      //   });
+      //   //console.log(arrays)
+      //   if (arrays.length == 0) {
+      //     //console.log("no set")
+      //     setTbodyData([]);
+      //   } else {
+      //     console.log("set")
+      //     setTbodyData(arrays);
+      //     setFullData(arrays);
+      //      let currentIndex = 0;
+      //      let currentPage = [];
+      //     for (let element of arrays) {
+      //       if (currentIndex >= numberRows){
+      //         currentIndex = 0;
+      //        console.log("get")
+      //        //console.log(currentPage)
+      //         break;
+      //       }
+      //       currentPage.push(element);
+      //       currentIndex++;
+      //     }
+      //      setCurrentNumberRows(1);
+      //      setCurrentPageData(currentPage);
+      //      console.log(currentPageData)
+      //     // divide to pages
+      //   }
+
+      //   //props.setDataLoading(false);
+      // }
     }.bind(this);
 
-    xhr.open('GET', nextURL, false);
+   // xhr.open('GET', nextURL, false);
     //props.setDataLoading(true);
     
     try {
-     xhr.send();
-     const params = new URLSearchParams();
-     params.append("name", "query")
-     console.log(history)
-     history.push({search: params.toString()})
+    // xhr.send();
+     //const params = new URLSearchParams();
+    // params.append("name", "query")
+    // console.log(history)
+     //history.push({search: params.toString()})
 // currentUrlParams.set('page', "1");
 // console.log(props.history)
 // props.history.push(window.location.pathname + "?" + currentUrlParams.toString());
@@ -105,7 +110,7 @@ function BottomSection(props: any){
       const currentPageNumberRow = currentNumberRows-1;
       setCurrentNumberRows(currentPageNumberRow);
       setCurrentPageData(currentPage);
-      history.push('/search/' + currentPageNumberRow, { swallow : false })
+      history('/search/' + currentPageNumberRow)
       //console.log(currentPage)
     }
   }
@@ -123,9 +128,16 @@ function BottomSection(props: any){
       const currentPageNumberRow = currentNumberRows+1;
       setCurrentNumberRows(currentPageNumberRow);
       setCurrentPageData(currentPage);
-      history.push('/search/' + currentPageNumberRow, { swallow : false })
+      history('/search/' + currentPageNumberRow)
       //console.log(currentPage)
     }
+  }
+
+  const tableROwClick = (prp)=>{
+    console.log("row click")
+    console.log(prp.target.textContent)
+    props.setClickedRowID(prp.target.textContent);
+    history("/search/" + currentNumberRows + "/details");
   }
 
   // if (props.isDataLoading) {
@@ -153,8 +165,8 @@ function BottomSection(props: any){
           <tbody>
             {currentPageData.map((item : {id:string, description:string}) => {
               return (
-                <tr>
-                  <td width="30%" className='apiTable'>{item.id}</td>
+                <tr onClick={tableROwClick}>
+                  <td id="id" width="30%" className='apiTable'>{item.id}</td>
                   <td>{item.description}</td>
                 </tr>
               );

@@ -1,3 +1,14 @@
 .parentSection {
     
 }
+
+.flexbox-container {
+    display: flex;
+    flex-direction: row;
+}
+.firstPane {
+    width: '50%',
+}
+.bottomPane {
+    width: '50%',
+}

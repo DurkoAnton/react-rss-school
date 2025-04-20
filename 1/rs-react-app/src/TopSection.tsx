@@ -2,19 +2,19 @@ import { Component, useState, useRef } from 'react';
 import './TopSection.css';
 import Parent from './Parent.tsx'
 
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 function TopSection (props:any){
   
   //const [searchvalue, set2] = useState(null);
   const searchRef = useRef();
-  const history = useHistory();
+  const history = useNavigate();
 
   const updateInput = () => {
     console.log("update search")
     //console.log(searchRef.current.value);
     console.log(props.searchvalue)
     props.setSearchValue(searchRef.current.value);
-    history.push('/search/1', { swallow : false })
+   history('/search/1')
    // const xhr = new XMLHttpRequest();
    // localStorage.setItem('searchValue', searchvalue.trim());
 

@@ -31,3 +31,9 @@ table {
     border-collapse: collapse;
     width: 100%;
 }
+
+.twoSections {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+}

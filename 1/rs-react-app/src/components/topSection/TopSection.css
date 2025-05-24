@@ -1,0 +1,24 @@
+.topSectionInput {
+    margin: 0 auto; 
+
+    line-height: 25px;
+    border: 2px solid; 
+    border-radius: 0.5rem;
+    width: 50%;
+    line-height: 2.0;
+}
+
+.topSection {
+    display: flex;  
+    flex-direction: column;
+    align-items: center;
+    row-gap: 20px;
+}
+
+.topSectionButton {
+    border: 2px solid;
+}
+
+h2 {
+    text-align: center;
+}

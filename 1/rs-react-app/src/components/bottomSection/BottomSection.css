@@ -4,6 +4,7 @@
 
 .bottomSection {
      margin-top: 10px;
+     align-items: center;
     /*border-width: 1px;
     border-color: gray;
     border-style: solid; */
@@ -29,11 +30,26 @@ td {
 }
 table {
     border-collapse: collapse;
-    width: 100%;
+    width: 50%;
+    align-items: center;
+    align-content: center;
+    justify-content: center;
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 10px;
 }
 
-.twoSections {
+/* .twoSections {
     display: flex;
     flex-direction: row;
     align-items: stretch;
+} */
+
+h1,h2,h3{
+    text-align: center;
+}
+
+.paginationContainer {
+    text-align: center;
 }
